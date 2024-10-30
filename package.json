@@ -1,0 +1,31 @@
+{
+  "name": "chess-notation-parser",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "serverless offline",
+    "deploy": "npm run build && serverless deploy",
+    "remove": "serverless remove",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@types/node": "^22.8.2",
+    "aws-sdk": "^2.1691.0",
+    "chess.js": "^1.0.0-beta.8",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.6.3"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.145",
+    "@types/chess.js": "^0.13.7",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "serverless-offline": "^14.3.3",
+    "ts-jest": "^29.2.5"
+  }
+}

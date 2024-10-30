@@ -1,0 +1,51 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: mischer
+# "app" enables Serverless Framework Dashboard features and sharing them with other Services.
+app: chess-notation-parser
+service: chess-notation-parser
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: us-east-1
+  environment:
+    DYNAMO_TABLE_NAME: ChessGames
+    S3_BUCKET_NAME: chess-notation-images
+
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "textract:DetectDocumentText"
+        - "s3:GetObject"
+        - "dynamodb:PutItem"
+      Resource: "*"
+
+functions:
+  parseChessNotation:
+    handler: dist/handlers/parser.handler
+    events:
+      - s3:
+          bucket: ${self:provider.environment.S3_BUCKET_NAME}
+          event: s3:ObjectCreated:*
+          existing: true
+
+resources:
+  Resources:
+    ChessGamesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.DYNAMO_TABLE_NAME}
+        AttributeDefinitions:
+          - AttributeName: "gameId"
+            AttributeType: "S"
+        KeySchema:
+          - AttributeName: "gameId"
+            KeyType: "HASH"
+        BillingMode: PAY_PER_REQUEST
+    ChessNotationBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET_NAME}
+
+plugins:
+  - serverless-offline
