@@ -7,10 +7,11 @@ service: chess-notation-parser
 provider:
   name: aws
   runtime: nodejs20.x
-  region: us-east-1
+  region: eu-west-1
   environment:
     DYNAMO_TABLE_NAME: ChessGames
-    S3_BUCKET_NAME: chess-notation-images
+    S3_BUCKET_NAME: chess-notation-images-${opt:stage, 'dev'}-${self:provider.region}
+    TEXTRACT_REGION: eu-west-1
 
   iamRoleStatements:
     - Effect: "Allow"

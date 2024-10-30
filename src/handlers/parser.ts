@@ -2,7 +2,7 @@ import { S3Event, APIGatewayProxyResult } from 'aws-lambda';
 import * as AWS from 'aws-sdk';
 import { generatePGNFromMoves, parseChessMoves } from '../utils/pgnUtils';
 
-const textract = new AWS.Textract();
+const textract = new AWS.Textract({ region: process.env.TEXTRACT_REGION });
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 const S3_BUCKET_NAME = process.env.S3_BUCKET_NAME!;
 const DYNAMO_TABLE_NAME = process.env.DYNAMO_TABLE_NAME!;
@@ -21,6 +21,7 @@ export const handler = async (event: S3Event): Promise<APIGatewayProxyResult> =>
             ?.filter(block => block.BlockType === 'LINE')
             .map(block => block.Text)
             .join(' ') || '';
+        console.log("Parsed text:", text);
 
         const moves = parseChessMoves(text);
         if (!moves || moves.length === 0) {
